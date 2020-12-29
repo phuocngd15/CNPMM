@@ -1,0 +1,25 @@
+.exams-title {
+  font-size: 25px;
+  font-weight: 400;
+  .exams-title-btn-add {
+    font-size: 18px;
+    padding: 0.5rem;
+  }
+}
+
+.exams-content {
+  th,
+  td,
+  label,
+  input {
+    font-size: 16px;
+    margin: 0 40px;
+  }
+  .exams-content-btn {
+    font-size: 18px;
+    margin-right: 20px;
+  }
+  .exams-content-group {
+    margin: 2rem 5rem;
+  }
+}

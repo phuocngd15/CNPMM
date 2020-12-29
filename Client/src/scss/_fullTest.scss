@@ -1,0 +1,74 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,500;1,500&display=swap');
+.fullTest-page {
+  background-color: white;
+  font-family: Arial, Helvetica, sans-serif;
+  .fullTest-header {
+    .fullTest-image {
+      width: 100%;
+    }
+    .fullTest-header-subject {
+      font-size: 4.5rem;
+      font-weight: 700;
+      line-height: 6rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-align: center;
+      color: #080940;
+    }
+  }
+  .fullTest-exams {
+    margin-bottom: 10px;
+    margin: 20px 0;
+
+    .fullTest-exams-title {
+      font-family: 'Roboto', sans-serif;
+      color: #3740ff;
+      font-size: 28px;
+      font-weight: 590;
+      line-height: 1rem;
+      margin: 20px 0;
+
+      .fullTest-exams-title-child {
+        color: black;
+        font-size: 26px;
+        line-height: 40px;
+        font-style: italic;
+        padding-left: 10px;
+        font-weight: 400;
+      }
+    }
+    .fullTest-exams-list {
+      .fullTest-exams-list-child {
+        text-align: center;
+
+        ul {
+          a {
+            color: #5acfc9;
+            font-weight: 600;
+            font-size: 1.2rem;
+          }
+        }
+      }
+    }
+
+    .fullTest-exams-point-content {
+      font-size: 16px;
+      margin: 10px 0;
+    }
+  }
+}
+.exam-page {
+  td {
+    padding-bottom: 1rem;
+    font-size: 18px;
+    color: #321fdb;
+  }
+}
+@media only screen and (max-device-width: 1024px) {
+  .fullTest-page {
+    .fullTest-header-subject {
+      color: red;
+    }
+  }
+}
