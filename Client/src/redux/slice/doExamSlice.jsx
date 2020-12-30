@@ -32,28 +32,39 @@ const getExam = createAsyncThunk('exam/listExam', async model => {
   const res = axiosGet(model);
   return res;
 });
-
+// submit xong
+// có list dap an sai, list dap an đúng
+// từ list đáp án sai, ta đi tìm đáp án đúng để render ra.
+// if (isSubmited) show dap án đúng ra
 const doExamSlice = createSlice({
   name: 'doExam',
   initialState: {
-    //answerSheet: FULL_TEST_ANSWER_SHEET,
+    answerSheetTmp: FULL_TEST_ANSWER_SHEET,
     answerSheet: null,
     pdfFile: null,
     audioFile: null,
     loading: false,
-    isSumited:true,
+    isSumited: false,
     error: {}
   },
   reducers: {
     chooseAnswer: (state, action) => {
       const { stt, dapAn } = action.payload;
-      console.log(action.payload);
-      let tmp = cloneDeep(state.answerSheet);
+      let tmp = cloneDeep(state.answerSheetTmp);
       tmp.forEach(e => {
         if (e.stt === stt) e.dapAn = dapAn;
       });
-      console.log('tmp', tmp);
-      state.answerSheet = tmp;
+      state.answerSheetTmp = tmp;
+    },
+    submitExam: (state, action) => {
+      state.isSumited = true;
+      const { answerTrue, answerFalse } = action.payload;
+      state.answerTrue = answerTrue;
+      state.answerFalse = answerFalse;
+    },
+    startExam: (state, action) => {
+      state.isSumited = false;
+      state.answerSheetTmp = FULL_TEST_ANSWER_SHEET;
     }
   },
   extraReducers: {
@@ -81,6 +92,6 @@ const doExamSlice = createSlice({
 });
 
 const { reducer, actions } = doExamSlice;
-const { chooseAnswer } = actions;
-export { chooseAnswer, getGGExam, getExam };
+const { chooseAnswer, submitExam } = actions;
+export { chooseAnswer, submitExam, getGGExam, getExam };
 export default reducer;

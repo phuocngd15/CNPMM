@@ -7,7 +7,7 @@ import { chooseAnswer } from '../../../redux/slice/doExamSlice';
 const Question = props => {
   const { stt } = props;
   const { answerSheet, isSumited } = useSelector(state => state.doExam);
-  //console.log(answerSheet[stt - 1]);
+  const [correctAnswer, setCorrectAnswer] = useState(null);
   const dispatch = useDispatch();
   const [answer, setAnswer] = useState([
     { id: 1, isChose: false },
@@ -15,8 +15,8 @@ const Question = props => {
     { id: 3, isChose: false },
     { id: 4, isChose: false }
   ]);
-
   const handleChoose = id => {
+    if (isSumited) return null;
     let newState = cloneDeep(answer);
     newState.forEach(item => {
       if (item.id === id) {
@@ -35,6 +35,48 @@ const Question = props => {
     setAnswer(newState);
   };
 
+  useEffect(() => {
+    // show đáp án
+    if (isSumited) {
+      const correctAnswer = answerSheet.find(e => e.stt === stt);
+      const tranferIntToABCD = number => {
+        switch (number) {
+          case 1:
+            return 'A';
+          case 2:
+            return 'B';
+          case 3:
+            return 'C';
+          case 4:
+            return 'D';
+          default:
+            return null;
+        }
+      };
+      const setColor = (checkedAnswers, trueAnswer) => {
+        const checkedAnswer = checkedAnswers.find(
+          e => e.id === trueAnswer.dapAn
+        );
+        console.log(checkedAnswer);
+        if (checkedAnswer.isChose) return 'correct-answer';
+        else return 'wrong-answer';
+      };
+      const className = setColor(answer, correctAnswer);
+
+      const answerCheckHtml = () => {
+        const notRender = className === 'correct-answer';
+        if (notRender) return <div>{`U+1F5F8`}</div>;
+        return (
+          <div className={`answer-item ${className}`}>
+            {tranferIntToABCD(correctAnswer.dapAn)}
+          </div>
+        );
+      };
+
+      setCorrectAnswer(answerCheckHtml());
+    }
+  }, [answer, answerSheet, isSumited, stt]);
+
   const buildAnswerRow = answer => {
     const answerHTML = answer.map(item => {
       return (
@@ -48,24 +90,10 @@ const Question = props => {
       );
     });
     answerHTML.unshift(<span className='answer-row-stt'>{stt}</span>);
+    answerHTML.push(correctAnswer);
     return answerHTML;
   };
 
-  const buildAnswerRowSubmited = answer => {
-    const answerHTML = answer.map(item => {
-      return (
-        <input
-          key={item.id}
-          type='radio'
-          className={`answer-item answer-${item.id}`}
-          checked={item.isChose}
-          onClick={() => handleChoose(item.id)}
-        />
-      );
-    });
-    answerHTML.unshift(<span className='answer-row-stt'>{stt}</span>);
-    return answerHTML;
-  };
   if (!answerSheet)
     return (
       <>
@@ -77,9 +105,7 @@ const Question = props => {
   return (
     <>
       <div>
-        <span className='answer-row'>
-          {isSumited ? buildAnswerRowSubmited(answer) : buildAnswerRow(answer)}
-        </span>
+        <span className='answer-row'>{buildAnswerRow(answer)}</span>
       </div>
     </>
   );

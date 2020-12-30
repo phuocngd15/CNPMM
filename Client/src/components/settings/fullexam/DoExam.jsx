@@ -14,12 +14,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import PlayerAudio, { useAudio } from '../../audio/PlayerAudio';
 import Axios from 'axios';
 import { axiosPost } from '../../../share/axios';
+import { submitExam } from '../../../redux/slice/doExamSlice';
 
 const DoExam = props => {
   const url = rc;
-  const [isPlaying, toggle] = useAudio({ url: audio });
+  const [isPlaying, toggle] = useAudio({ url: audio, isAutoPlay: true });
   // pdf
-
+  const [isStart, setIsStart] = useState(true);
   pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
   const [numPages, setNumPages] = useState(null);
   const [pageNumber, setPageNumber] = useState(1);
@@ -93,7 +94,7 @@ const DoExam = props => {
           <div className='doExam-main-intro'>
             <h3>Mark your answer on your answer sheet</h3>
             <div>
-              <OClock onPlayAudio={toggle} />
+              <OClock onPlayAudio={toggle} onStart={{ isStart, setIsStart }} />
             </div>
           </div>
           <AnswerSheet />
@@ -149,24 +150,53 @@ const AnswerSheet = () => {
 };
 
 const OClock = props => {
-  const { onPlayAudio } = props;
-  const [isStart, setIsStart] = useState(false);
+  const { onPlayAudio, onStart } = props;
+  const { isStart, setIsStart } = onStart;
+  const dispatch = useDispatch();
+  // const [isStart, setIsStart] = useState(false);
   const [timer, setTimer] = useState(Date.now());
   const examInfo = useSelector(state => state.doExam);
+  const [scoreResult, setScoreResult] = useState(null);
+  const { answerSheet, isSumited, answerSheetTmp } = useSelector(
+    state => state.doExam
+  );
+
   const accountLogin = useSelector(state => state.authentication.loginState);
-  const { answerSheet } = examInfo;
+
+  //  const { answerSheet } = examInfo;
   const { email } = accountLogin;
+
+  const compareAnswer = (truthAnswerSheet, answerSheet) => {
+    if (!truthAnswerSheet || !answerSheet) return null;
+    const answerTrue = [];
+    const answerFalse = [];
+    console.log('truthAnswerSheet', truthAnswerSheet);
+    console.log('answerSheet', answerSheet);
+    answerSheet.forEach(e => {
+      const correctAnswer = truthAnswerSheet.find(cra => cra.stt === e.stt);
+      if (correctAnswer.dapAn === e.dapAn) answerTrue.push(e);
+      else answerFalse.push(e);
+    });
+    console.log('answerTrue', answerTrue);
+    console.log('answerFalse', answerFalse);
+    return { answerTrue, answerFalse };
+  };
 
   const handleSubmit = async () => {
     setIsStart(false);
     onPlayAudio(false);
-    let examResult = {
+    const result = compareAnswer(answerSheet, answerSheetTmp);
+    setScoreResult(2);
+    result && dispatch(submitExam(result));
+    /* let examResult = {
       email: email,
       answerSheet: answerSheet,
       url: 'http://localhost:9999/ketQuaBaiThi'
-    };
+    }; */
     // phd submit dethi
-    const res = await axiosPost(examResult);
+    // dispach dap an
+
+    //const res = await axiosPost(examResult);
   };
 
   const handleHetThoiGian = isCompleted => {
@@ -196,7 +226,8 @@ const OClock = props => {
         </>
       );
     return (
-      <CButton
+      <h3>ket quả thi: {scoreResult}</h3>
+      /* { <CButton
         variant='outline'
         color='success'
         size='lg'
@@ -206,7 +237,7 @@ const OClock = props => {
           onPlayAudio(true);
         }}>
         Bắt đầu
-      </CButton>
+      </CButton> }*/
     );
   };
   return <>{renderBtn(isStart)}</>;
