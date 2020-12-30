@@ -15,6 +15,8 @@ import PlayerAudio, { useAudio } from '../../audio/PlayerAudio';
 import Axios from 'axios';
 import { axiosPost } from '../../../share/axios';
 import { submitExam } from '../../../redux/slice/doExamSlice';
+import { LISTEN_SCORE_TOEIC, READING_SCORE_TOEIC } from '../examAnswerSheet';
+import { isBuffer } from 'lodash';
 
 const DoExam = props => {
   const url = rc;
@@ -179,14 +181,48 @@ const OClock = props => {
     });
     console.log('answerTrue', answerTrue);
     console.log('answerFalse', answerFalse);
-    return { answerTrue, answerFalse };
+    const test = calculatePart(answerTrue);
+    console.log(test);
+    return { answerTrue, answerFalse, answerByPart: test };
+  };
+  const calculatePart = answerTrue => {
+    let numberListen = 0;
+    let numberReading = 0;
+
+    answerTrue.forEach(e => {
+      if (e.stt <= 100) numberListen = numberListen + 1;
+      if (e.stt >= 100) numberReading = numberReading + 1;
+    });
+
+    return { numberListen, numberReading };
+  };
+
+  const caculateScore = (tableScore, number) => {
+    return tableScore.find(e => e.numberCorrect === number).score;
   };
 
   const handleSubmit = async () => {
     setIsStart(false);
     onPlayAudio(false);
     const result = compareAnswer(answerSheet, answerSheetTmp);
-    setScoreResult(2);
+    if (result) {
+      const { answerByPart } = result;
+      const { numberListen, numberReading } = answerByPart;
+      const listenScore = caculateScore(LISTEN_SCORE_TOEIC, numberListen);
+      const readScore = caculateScore(READING_SCORE_TOEIC, numberReading);
+      const sumScore = listenScore + readScore;
+      const resultHTML = (
+        <div>
+          <div>Listening: {numberListen}/100 câu</div>
+          <div>Listening Score: {listenScore}</div>
+          <div>Reading part: {numberReading}/100 câu</div>
+          <div>Reading Score: {readScore}</div>
+          <h3>Tổng Điểm: {sumScore}/990</h3>
+        </div>
+      );
+      setScoreResult(resultHTML);
+    }
+
     result && dispatch(submitExam(result));
     /* let examResult = {
       email: email,
@@ -205,8 +241,7 @@ const OClock = props => {
     }
   };
   const renderBtn = isStart => {
-    console.log('rerender');
-
+    console.log('scoreResult', scoreResult);
     if (isStart)
       return (
         <>
@@ -226,7 +261,7 @@ const OClock = props => {
         </>
       );
     return (
-      <h3>ket quả thi: {scoreResult}</h3>
+      <div>{scoreResult}</div>
       /* { <CButton
         variant='outline'
         color='success'

@@ -58,7 +58,6 @@ const Question = props => {
         const checkedAnswer = checkedAnswers.find(
           e => e.id === trueAnswer.dapAn
         );
-        console.log(checkedAnswer);
         if (checkedAnswer.isChose) return 'correct-answer';
         else return 'wrong-answer';
       };

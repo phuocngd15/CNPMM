@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import Axios from 'axios';
 import { cloneDeep } from 'lodash';
 import fs from 'fs';
-import { FULL_TEST_ANSWER_SHEET } from '../const/examAnswerSheet';
+import { FULL_TEST_ANSWER_SHEET } from '../../components/settings/examAnswerSheet';
 import { axiosGet } from '../../share/axios';
 
 const getGGExam = createAsyncThunk('exam/listExam', async model => {
