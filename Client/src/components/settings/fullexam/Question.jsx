@@ -3,7 +3,8 @@ import { CCol, CFormGroup, CLabel, CRow } from '@coreui/react';
 import { cloneDeep } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 import { chooseAnswer } from '../../../redux/slice/doExamSlice';
-
+import CIcon from '@coreui/icons-react';
+import { cilCheck } from '@coreui/icons';
 const Question = props => {
   const { stt } = props;
   const { answerSheet, isSumited } = useSelector(state => state.doExam);
@@ -61,11 +62,12 @@ const Question = props => {
         if (checkedAnswer.isChose) return 'correct-answer';
         else return 'wrong-answer';
       };
-      const className = setColor(answer, correctAnswer);
 
       const answerCheckHtml = () => {
+        const className = setColor(answer, correctAnswer);
         const notRender = className === 'correct-answer';
-        if (notRender) return <div>{`U+1F5F8`}</div>;
+        if (notRender)
+          return <CIcon size='2x' name='cilCheck' className={className} />;
         return (
           <div className={`answer-item ${className}`}>
             {tranferIntToABCD(correctAnswer.dapAn)}

@@ -83,6 +83,8 @@ const doExamSlice = createSlice({
       const { _id, answerSheet } = action.payload.data;
       state.answerSheet = answerSheet;
       state.loading = false;
+      state.isSumited = false;
+      state.answerSheetTmp = FULL_TEST_ANSWER_SHEET;
     },
     [getExam.rejected]: (state, action) => {
       state.messageLog = 'Cannot get list exams';
