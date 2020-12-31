@@ -1,22 +1,38 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 const useAudio = props => {
   const { url, isAutoPlay = false } = props;
-  const [audio] = useState(new Audio(url));
+  const [audio, setAudio] = useState(null);
   const [playing, setPlaying] = useState(isAutoPlay);
 
-  const toggle = (value) => setPlaying(value);
+  const toggle = value => {
+    console.log('tu huy2', value);
+    setPlaying(value);
+  };
 
   useEffect(() => {
-    playing ? audio.play() : audio.pause();
-  }, [audio, playing]);
+    if (audio) {
+      playing ? audio.play() : audio.pause();
+    } else {
+      setAudio(new Audio(url));
+    }
 
-  useEffect(() => {
-    audio.addEventListener('ended', () => setPlaying(false));
     return () => {
-      audio.removeEventListener('ended', () => setPlaying(false));
+      console.log('remove audio');
+      audio && audio.pause();
+      audio && setAudio(null);
     };
-  }, [audio]);
+  }, [audio, playing, url]);
+
+  /*   useEffect(() => {
+    audio && audio.addEventListener('ended', () => setPlaying(false));
+    return () => {
+      audio &&
+        audio.removeEventListener('ended', () => {
+          setPlaying(false);
+        });
+    };
+  }, [audio]); */
 
   return [playing, toggle];
 };

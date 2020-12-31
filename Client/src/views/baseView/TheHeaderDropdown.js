@@ -44,7 +44,12 @@ const TheHeaderDropdown = () => {
           className='header-dropdown-profile'
           onClick={handleRecoverPass}>
           <CIcon name='cil-user' className='mfe-2' />
-          Profile
+          Thông tin cá nhân
+        </CDropdownItem>
+        <CDropdownItem divider />
+        <CDropdownItem onClick={() => history.push('/exam-history')}>
+          <CIcon name='cilHistory' className='mfe-2' />
+          Lịch sử thi
         </CDropdownItem>
         <CDropdownItem divider />
         <CDropdownItem onClick={handleLogOut}>

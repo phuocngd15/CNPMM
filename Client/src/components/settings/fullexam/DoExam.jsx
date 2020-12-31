@@ -1,5 +1,5 @@
 import { CCol, CRow, CButton } from '@coreui/react';
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import rc from './LC.pdf';
 import Questions from './Questions';
@@ -17,7 +17,10 @@ import { axiosPost } from '../../../share/axios';
 import { submitExam } from '../../../redux/slice/doExamSlice';
 import { LISTEN_SCORE_TOEIC, READING_SCORE_TOEIC } from '../examAnswerSheet';
 import { isBuffer } from 'lodash';
-
+const useComponentWillMount = func => {
+  useMemo(func, []);
+};
+const useComponentDidMount = func => useEffect(func, []);
 const DoExam = props => {
   const url = rc;
   const [isPlaying, toggle] = useAudio({ url: audio, isAutoPlay: true });
@@ -165,6 +168,13 @@ const OClock = props => {
 
   const accountLogin = useSelector(state => state.authentication.loginState);
 
+  /*   useEffect(() => {
+    // onPlayAudio(true);
+    return () => {
+      console.log('tu huy');
+      onPlayAudio(false);
+    };
+  }, [onPlayAudio]); */
   //  const { answerSheet } = examInfo;
   const { email } = accountLogin;
 

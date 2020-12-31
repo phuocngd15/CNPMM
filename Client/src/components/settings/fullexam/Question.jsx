@@ -4,7 +4,7 @@ import { cloneDeep } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 import { chooseAnswer } from '../../../redux/slice/doExamSlice';
 import CIcon from '@coreui/icons-react';
-import { cilCheck } from '@coreui/icons';
+
 const Question = props => {
   const { stt } = props;
   const { answerSheet, isSumited } = useSelector(state => state.doExam);
