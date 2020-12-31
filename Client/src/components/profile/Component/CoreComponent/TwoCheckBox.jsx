@@ -106,7 +106,7 @@ const TwoCheckBox = props => {
           <CSelect custom name='ccmonth' id='profile-gender'>
             <option value='Nữ'>Nữ</option>
             <option value='Nam'>Nam</option>
-            <option value='Không công khai'>Không công khai</option>
+            <option value='Bỏ trống'>Bỏ trống</option>
           </CSelect>
         </CFormGroup>
       );
