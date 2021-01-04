@@ -10,7 +10,7 @@ import {
   CLink
 } from '@coreui/react';
 import CIcon from '@coreui/icons-react';
-import { logOut } from '../redux/slice/authenticationSlice';
+import { logOut } from '../../redux/slice/authenticationSlice';
 
 const TheHeaderDropdown = () => {
   let history = useHistory();

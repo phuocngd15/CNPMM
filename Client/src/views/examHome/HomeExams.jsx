@@ -1,15 +1,5 @@
-import React, { Fragment, useEffect, useState } from 'react';
-import { CCol, CRow, CContainer, CLink } from '@coreui/react';
-import { mdiClockAlertOutline } from '@mdi/js';
-import Icon from '@mdi/react';
-import {
-  getExamRequest,
-  getExamsRequest
-} from '../../redux/slice/examSlide';
-import { Link, Redirect } from 'react-router-dom';
-import Exam from '../../components/settings/fullexam/Exam';
-import { useDispatch, useSelector } from 'react-redux';
-import Axios from 'axios';
+import React from 'react';
+import { CCol, CRow } from '@coreui/react';
 
 const HomeExams = () => {
   return (

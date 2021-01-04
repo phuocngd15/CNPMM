@@ -49,7 +49,7 @@ const AnalyzeExam = () => {
     let cancelled = false;
     (async () => {
       const reqModel = {
-        url: `http://localhost:9999/api/Fullexam/one`,
+        url: `http://localhost:9999/api/Fullexam/info`,
         id: id
       };
       dispatch(getExam(reqModel));

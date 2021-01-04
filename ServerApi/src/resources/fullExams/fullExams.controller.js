@@ -29,7 +29,6 @@ export const postFullExam = async (req, res, next) => {
       return res.status(200).json({ data: fullexam });
     }
   } catch (error) {
-    console.log(error.message);
     res
       .status(400)
       .send({ message: 'Error.' })
@@ -113,7 +112,7 @@ export const getListFullExams = async (req, res) => {
 export const getOneFullExams = async (req, res) => {
   res.status(200).json({
     _id: req.query.id,
-    title: `'Đề thi số ${req.query.id}`,
+    title: `Đề thi số ${req.query.id}`,
     answerSheet: FULL_TEST_ANSWER_SHEET
   });
 };

@@ -22,7 +22,7 @@ import {
   TheHeaderDropdownNotif,
   TheHeaderDropdownTasks
 } from './index';
-import { showHideSidebar } from '../redux/slice/sidebarSlice';
+import { showHideSidebar } from '../../redux/slice/sidebarSlice';
 
 const TheHeader = () => {
   const dispatch = useDispatch();

@@ -14,12 +14,12 @@ const getGGExam = createAsyncThunk('exam/listExam', async model => {
 
   const response = await Axios(`http://localhost:9999/api/uploadFile/getOne`, {
     method: 'GET',
-    responseType: 'blob' //Force to receive data in a Blob Format
+    responseType: 'blob' 
   })
     .then(response => {
       //Create a Blob from the PDF Stream
-      const file = new Blob([response.data], { type: 'application/pdf' }); //Build a URL from the file
-      const fileURL = URL.createObjectURL(file); //Open the URL on new Window
+      const file = new Blob([response.data], { type: 'application/pdf' }); 
+      const fileURL = URL.createObjectURL(file); 
       window.open(fileURL);
     })
     .catch(error => {
@@ -32,10 +32,7 @@ const getExam = createAsyncThunk('exam/listExam', async model => {
   const res = axiosGet(model);
   return res;
 });
-// submit xong
-// có list dap an sai, list dap an đúng
-// từ list đáp án sai, ta đi tìm đáp án đúng để render ra.
-// if (isSubmited) show dap án đúng ra
+
 const doExamSlice = createSlice({
   name: 'doExam',
   initialState: {
@@ -80,11 +77,12 @@ const doExamSlice = createSlice({
     },
     [getExam.fulfilled]: (state, action) => {
       // state.file = action.payload;
-      const { _id, answerSheet } = action.payload.data;
+      const { _id, answerSheet, title } = action.payload.data;
       state.answerSheet = answerSheet;
       state.loading = false;
       state.isSumited = false;
       state.answerSheetTmp = FULL_TEST_ANSWER_SHEET;
+      state.title = title;
     },
     [getExam.rejected]: (state, action) => {
       state.messageLog = 'Cannot get list exams';

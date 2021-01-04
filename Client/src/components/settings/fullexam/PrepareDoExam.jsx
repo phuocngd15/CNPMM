@@ -11,14 +11,16 @@ const PrepareDoExam = () => {
   // let id = useParams();
   const { id } = useParams();
   const prepareDoExam = useSelector(state => state.doExam);
-
+  const { title } = prepareDoExam;
+  const realTitle = title || null;
+  console.log(prepareDoExam);
   const dispatch = useDispatch();
   //old
   useEffect(() => {
     let cancelled = false;
     (async () => {
       const reqModel = {
-        url: `http://localhost:9999/api/Fullexam/one`,
+        url: `http://localhost:9999/api/Fullexam/info`,
         id: id
       };
       dispatch(getExam(reqModel));
@@ -49,7 +51,7 @@ const PrepareDoExam = () => {
   }
   return (
     <CContainer className='intro-container'>
-      <h1>Test Number 9 - ETS 2020 </h1>
+      <h1>{realTitle}</h1>
       <h4>Total time: 120 minutes</h4>
       <ul>
         <li>Listening: 45 minutes</li>

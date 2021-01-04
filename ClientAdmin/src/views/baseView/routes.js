@@ -1,21 +1,21 @@
 import React from 'react';
 
-const Exams = React.lazy(() => import('../components/settings/exams/Exams'));
+const Exams = React.lazy(() => import('../../components/examsModule/exams/Exams'));
 
 const UploadFile = React.lazy(() =>
-  import('../components/uploadFile/UploadFile')
+  import('../../components/uploadFile/UploadFile')
 );
 const ThongKeGiaiDe = React.lazy(() =>
-  import('../components/thongke/ThongKeGiaiDe')
+  import('../../components/thongke/ThongKeGiaiDe')
 );
 
-const Admin = React.lazy(() => import('../components/settings/users/Admins'));
+const Admin = React.lazy(() => import('../../components/examsModule/users/Admins'));
 const Clients = React.lazy(() =>
-  import('../components/settings/users/Clients')
+  import('../../components/examsModule/users/Clients')
 );
 
 const profile = React.lazy(() =>
-  import('../components/settings/profile/Profile')
+  import('../../components/examsModule/profile/Profile')
 );
 
 const routes = [

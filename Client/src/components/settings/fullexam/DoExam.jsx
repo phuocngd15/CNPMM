@@ -1,26 +1,17 @@
 import { CCol, CRow, CButton } from '@coreui/react';
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import rc from './LC.pdf';
 import Questions from './Questions';
 import { mdiTriangle } from '@mdi/js';
 import Icon from '@mdi/react';
-import { mdiPause } from '@mdi/js';
 import audio from './TEST 01.mp3';
-import useSound from 'use-sound';
-import TimeSlider from 'react-input-slider';
 import Countdown from 'react-countdown';
 import { useDispatch, useSelector } from 'react-redux';
-import PlayerAudio, { useAudio } from '../../audio/PlayerAudio';
-import Axios from 'axios';
-import { axiosPost } from '../../../share/axios';
+import { useAudio } from '../../audio/PlayerAudio';
 import { submitExam } from '../../../redux/slice/doExamSlice';
 import { LISTEN_SCORE_TOEIC, READING_SCORE_TOEIC } from '../examAnswerSheet';
-import { isBuffer } from 'lodash';
-const useComponentWillMount = func => {
-  useMemo(func, []);
-};
-const useComponentDidMount = func => useEffect(func, []);
+
 const DoExam = props => {
   const url = rc;
   const [isPlaying, toggle] = useAudio({ url: audio, isAutoPlay: true });
@@ -270,20 +261,7 @@ const OClock = props => {
           </CButton>
         </>
       );
-    return (
-      <div>{scoreResult}</div>
-      /* { <CButton
-        variant='outline'
-        color='success'
-        size='lg'
-        className='intro-container-btn-start'
-        onClick={() => {
-          setIsStart(true);
-          onPlayAudio(true);
-        }}>
-        Bắt đầu
-      </CButton> }*/
-    );
+    return <div>{scoreResult}</div>;
   };
   return <>{renderBtn(isStart)}</>;
 };
