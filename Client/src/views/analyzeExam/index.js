@@ -1,63 +1,73 @@
 import React, { useEffect, useState } from 'react';
-import { Bar, defaults, HorizontalBar } from 'react-chartjs-2';
-import { Doughnut, Line } from 'react-chartjs-2';
-import { compareAsc, format } from 'date-fns';
-import { CFormGroup, CSelect } from '@coreui/react';
-import Select from 'react-select';
+import { Bar } from 'react-chartjs-2';
+import { Doughnut } from 'react-chartjs-2';
+import { format } from 'date-fns';
+import { axiosGet } from '../../share/axios';
+import { useSelector } from 'react-redux';
+import DayPickerInput from 'react-day-picker/DayPickerInput';
+import 'react-day-picker/lib/style.css';
 
-const options = [
-  { value: '1', label: '1' },
-  { value: '2', label: '2' },
-  { value: '3', label: '3' },
-  { value: '4', label: '4' },
-  { value: '5', label: '5' },
-  { value: '6', label: '6' },
-  { value: '7', label: '7' },
-  { value: '8', label: '8' },
-  { value: '9', label: '9' },
-  { value: '10', label: '10' },
-  { value: '11', label: '11' },
-  { value: '12', label: '12' }
-];
-
-function getDaysInMonth(month, year) {
+const getDaysInMonth = (month, year) => {
   let date = new Date(year, month, 1);
   const days = [];
   while (date.getMonth() === month) {
-    const fomatedDate = format(new Date(date), 'dd/MM/yyyy');
+    const fomatedDate = format(new Date(date), 'dd/MM/yy');
     days.push(fomatedDate);
     date.setDate(date.getDate() + 1);
   }
 
   return days;
-}
+};
 
-const makeLabe = month => {
-  const test = getDaysInMonth(month - 1, 2020);
+const makeLabe = (month, year) => {
+  const test = getDaysInMonth(month - 1, year);
   return test;
 };
 
 const AnalyzeExam = () => {
+  const accountLogin = useSelector(state => state.authentication.loginState);
+  const { email } = accountLogin;
   const [dataPieChartReading, setDataPieChartReading] = useState({});
   const [dataPieChartListening, setDataPieChartListening] = useState({});
   const [data, setData] = useState({});
 
   const [dataColumnChart, setDataColumnChart] = useState(null);
-  const [selectedOption, setSelectedOption] = useState(null);
+  const [filter, setfilter] = useState(null);
   const [sumScore, setSumScore] = useState(null);
-  /*  useEffect(() => {
+
+  const queryData = async () => {
+    console.log('filter', filter);
+    let date = new Date();
+    console.log('date', date);
+
+    const analyzeModel = {
+      url: `http://localhost:9999/api/recordHistory/analyze`,
+      email: email,
+      dateTime: filter
+    };
+    const res = await axiosGet(analyzeModel);
+    console.log(res.data);
+    return res.data;
+  };
+  /* useEffect(() => {
     let cancelled = false;
     (async () => {
-      const reqModel = {
-        url: `http://localhost:9999/api/Fullexam/info`,
-        id: id
+      console.log('filter', filter);
+      let date = new Date();
+      console.log('date', date);
+
+      const analyzeModel = {
+        url: `http://localhost:9999/api/recordHistory/analyze`,
+        email: email,
+        dateTime: filter
       };
-      dispatch(getExam(reqModel));
+      axiosGet(analyzeModel);
     })();
     return () => {
       cancelled = true;
     };
-  }, []); */
+  }, [email, filter, sumScore]); */
+
   const dataMockColumnChar = () => {
     const result = [];
     let count = 1;
@@ -70,18 +80,20 @@ const AnalyzeExam = () => {
     return result;
   };
 
-  const changeAnalyzeTimes = month => {
+  const changeAnalyzeTimes = async (month, year) => {
+    const { labelDate, values } = await queryData();
+    console.log(data);
     const columnChar = {
-      labels: makeLabe(month),
+      labels: labelDate,
       datasets: [
         {
-          label: 'Số lần làm bài(ngày)',
+          label: 'Số lần làm bài',
           backgroundColor: 'rgba(255,99,132,0.2)',
           borderColor: 'rgba(255,99,132,1)',
           borderWidth: 1,
           hoverBackgroundColor: 'rgba(255,99,132,0.4)',
           hoverBorderColor: 'rgba(255,99,132,1)',
-          data: dataMockColumnChar(),
+          data: values,
           barPercentage: 0.8,
           categoryPercentage: 0.5
         }
@@ -109,6 +121,7 @@ const AnalyzeExam = () => {
         }
       ]
     };
+    console.log(columnChar);
 
     return {
       pieReadChar,
@@ -117,15 +130,16 @@ const AnalyzeExam = () => {
       sumScore: readScore + listenScore
     };
   };
-  const handleChange = selectedOption => {
-    setSelectedOption(selectedOption);
-    console.log(selectedOption);
+
+  const handleChange = filter => {
+    setfilter(filter);
+    console.log(filter);
     const {
       pieReadChar,
       pieLisChar,
       columnChar,
       sumScore
-    } = changeAnalyzeTimes(selectedOption.value);
+    } = changeAnalyzeTimes(filter.getMonth() + 1, filter.getYear());
     setSumScore(sumScore);
     setDataColumnChart(columnChar);
     setDataPieChartListening(pieLisChar);
@@ -135,15 +149,10 @@ const AnalyzeExam = () => {
   return (
     <div>
       <div className='analyze-filter'>
-        <h3>Tháng:</h3>
-        <Select
-          className='months-selection'
-          value={selectedOption}
-          onChange={handleChange}
-          options={options}
-        />
+        <h3>Filer: </h3>
+        <DayPickerInput onDayChange={handleChange} />
       </div>
-      {selectedOption && (
+      {filter && (
         <div className='analyze-score'>
           <div className='title'>
             Bài đạt điểm cao nhất:
@@ -166,9 +175,7 @@ const AnalyzeExam = () => {
         <div className='analyze-times'>
           <div className='title'>
             Thống kê lượt làm bài tháng:
-            <span className='highlight'>
-              {selectedOption ? selectedOption.label : null}
-            </span>
+            <span className='highlight'>{filter ? filter.label : null}</span>
           </div>
           <Bar
             data={dataColumnChart}

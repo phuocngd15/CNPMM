@@ -9,7 +9,7 @@ import audio from './TEST 01.mp3';
 import Countdown from 'react-countdown';
 import { useDispatch, useSelector } from 'react-redux';
 import { useAudio } from '../../audio/PlayerAudio';
-import { submitExam } from '../../../redux/slice/doExamSlice';
+import { submitExam, sendExam } from '../../../redux/slice/doExamSlice';
 import { LISTEN_SCORE_TOEIC, READING_SCORE_TOEIC } from '../examAnswerSheet';
 
 const DoExam = props => {
@@ -149,43 +149,29 @@ const OClock = props => {
   const { onPlayAudio, onStart } = props;
   const { isStart, setIsStart } = onStart;
   const dispatch = useDispatch();
-  // const [isStart, setIsStart] = useState(false);
   const [timer, setTimer] = useState(Date.now());
   const examInfo = useSelector(state => state.doExam);
   const [scoreResult, setScoreResult] = useState(null);
-  const { answerSheet, isSumited, answerSheetTmp } = useSelector(
-    state => state.doExam
-  );
-
+  const { answerSheet, answerSheetTmp } = useSelector(state => state.doExam);
   const accountLogin = useSelector(state => state.authentication.loginState);
-
-  /*   useEffect(() => {
-    // onPlayAudio(true);
-    return () => {
-      console.log('tu huy');
-      onPlayAudio(false);
-    };
-  }, [onPlayAudio]); */
-  //  const { answerSheet } = examInfo;
   const { email } = accountLogin;
+  const { _examId } = examInfo;
 
   const compareAnswer = (truthAnswerSheet, answerSheet) => {
     if (!truthAnswerSheet || !answerSheet) return null;
     const answerTrue = [];
     const answerFalse = [];
-    console.log('truthAnswerSheet', truthAnswerSheet);
-    console.log('answerSheet', answerSheet);
+
     answerSheet.forEach(e => {
       const correctAnswer = truthAnswerSheet.find(cra => cra.stt === e.stt);
       if (correctAnswer.dapAn === e.dapAn) answerTrue.push(e);
       else answerFalse.push(e);
     });
-    console.log('answerTrue', answerTrue);
-    console.log('answerFalse', answerFalse);
     const test = calculatePart(answerTrue);
-    console.log(test);
+    
     return { answerTrue, answerFalse, answerByPart: test };
   };
+
   const calculatePart = answerTrue => {
     let numberListen = 0;
     let numberReading = 0;
@@ -222,6 +208,13 @@ const OClock = props => {
         </div>
       );
       setScoreResult(resultHTML);
+      const modelSubmit = {
+        url: `http://localhost:9999/api/recordHistory/submit`,
+        _examId: _examId,
+        score: sumScore,
+        email: email
+      };
+      dispatch(sendExam(modelSubmit));
     }
 
     result && dispatch(submitExam(result));
@@ -241,8 +234,8 @@ const OClock = props => {
       handleSubmit();
     }
   };
+
   const renderBtn = isStart => {
-    console.log('scoreResult', scoreResult);
     if (isStart)
       return (
         <>
@@ -263,6 +256,7 @@ const OClock = props => {
       );
     return <div>{scoreResult}</div>;
   };
+
   return <>{renderBtn(isStart)}</>;
 };
 export default DoExam;

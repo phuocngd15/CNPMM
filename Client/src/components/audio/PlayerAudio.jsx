@@ -6,7 +6,6 @@ const useAudio = props => {
   const [playing, setPlaying] = useState(isAutoPlay);
 
   const toggle = value => {
-    console.log('tu huy2', value);
     setPlaying(value);
   };
 
@@ -18,7 +17,6 @@ const useAudio = props => {
     }
 
     return () => {
-      console.log('remove audio');
       audio && audio.pause();
       audio && setAudio(null);
     };
